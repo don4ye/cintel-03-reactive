@@ -8,6 +8,7 @@ from ipyleaflet import Map
 
 # Use the built-in function to load the Palmer Penguins dataset
 penguins = load_penguins()
+
 ui.page_opts(title="Penguin Data Monsuru")
 
 # Add a Shiny UI sidebar for user interaction
@@ -16,16 +17,22 @@ with ui.sidebar(open="open"):
     ui.h2("Sidebar")
     # Add dropdown input to choose a column
     ui.input_selectize("selected_attribute", "Choose a Column", ["bill_length_mm", "bill_depth_mm", "flipper_length_mm", "body_mass_g"])
+    
     # Add numeric input for the number of Plotly histogram bins
     ui.input_numeric("plotly_bin_count", "Number of Plotly Histogram Bins", value=20)
+    
     # Add slider input for the number of Seaborn bins
     ui.input_slider("seaborn_bin_count", "Number of Seaborn Bins", 1, 20, 5)
+    
     # Add checkbox group input to filter the species
     ui.input_checkbox_group("selected_species_list", "Select Species", ["Adelie", "Gentoo", "Chinstrap"], selected=["Adelie"], inline=True)
+    
     # Add text input
     ui.input_text("Text", "Enter text", "Hello Shiny")
+    
     # Add a horizontal rule to the sidebar
     ui.hr()
+    
     # Add a hyperlink to the sidebar
     ui.a("GitHub", href="https://github.com/don4ye/cintel-02-data.git", target="_blank")
 
