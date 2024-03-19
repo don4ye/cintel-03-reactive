@@ -1,4 +1,4 @@
-import pandas as pd
+# Import necessary libraries
 import plotly.express as px
 from shiny.express import input, ui, render
 from shinywidgets import render_widget, render_plotly
@@ -16,11 +16,7 @@ ui.page_opts(title="Penguin Data Monsuru")
 # Add a reactive calculation to filter the data
 @reactive.calc
 def filtered_data():
-    selected_species = input.selected_species_list()
-    if selected_species:
-        return penguins_df[penguins_df['species'].isin(selected_species)]
-    else:
-        return penguins_df
+    return penguins_df[penguins_df["species"].isin(input.selected_species_list())]
 
 # Add a Shiny UI sidebar for user interaction
 with ui.sidebar(open="open"):
@@ -42,12 +38,12 @@ with ui.layout_columns():
         def plot():
             scatterplot = px.histogram(
                 data_frame=filtered_data(),  # Use filtered_data instead of penguins_df
-                x="body_mass_g",
+                x=input.selected_attribute(),  # Use the selected attribute here
                 nbins=input.plotly_bin_count(),
             ).update_layout(
                 title={"text": "Penguin Mass", "x": 0.5},
                 yaxis_title="Count",
-                xaxis_title="Body Mass (g)",
+                xaxis_title="Selected Attribute",  # Update the x-axis title
             )
 
             return scatterplot
@@ -57,9 +53,9 @@ with ui.layout_columns():
 
         @render.plot(alt="A Seaborn histogram on penguin body mass in grams.")
         def seaborn_histogram():
-            ax = sns.histplot(data=filtered_data(), x="body_mass_g", bins=input.seaborn_bin_count())  
+            ax = sns.histplot(data=filtered_data(), x=input.selected_attribute(), bins=input.seaborn_bin_count())  
             ax.set_title("Palmer Penguins")
-            ax.set_xlabel("Mass (g)")
+            ax.set_xlabel("Selected Attribute")  # Update the x-axis label
             ax.set_ylabel("Count")
             return ax
 
@@ -98,17 +94,7 @@ with ui.layout_columns():
         def text():
             return input.Text()
 
-# --------------------------------------------------------
 # Reactive calculations and effects
-# --------------------------------------------------------
-
-# Add a reactive calculation to filter the data
-# By decorating the function with @reactive, we can use the function to filter the data
-# The function will be called whenever an input functions used to generate that output changes.
-# Any output that depends on the reactive function (e.g., filtered_data()) will be updated when the data changes.
-
 @reactive.calc
 def filtered_data():
-    return penguins_df
-
-
+    return penguins_df[penguins_df["species"].isin(input.selected_species_list())]
